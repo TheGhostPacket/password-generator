@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Security Suite - Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0f172a;
+            color: white;
+        }
+        .test-section {
+            background: #1e293b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0f172a;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 100px;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #06b6d4; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Password Generator Debug Test</h1>
+    <p>This page will test if all features are working correctly.</p>
+
+    <div class="test-section">
+        <h2>Test 1: Basic JavaScript</h2>
+        <button onclick="test1()">Run Test 1</button>
+        <p id="test1Result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Crypto API (Password Generation)</h2>
+        <button onclick="test2()">Run Test 2</button>
+        <p id="test2Result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: SHA-1 Hashing (for Breach Check)</h2>
+        <button onclick="test3()">Run Test 3</button>
+        <p id="test3Result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: HIBP API Connection</h2>
+        <button onclick="test4()">Run Test 4</button>
+        <p id="test4Result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Full Password Generation</h2>
+        <button onclick="test5()">Run Test 5</button>
+        <p id="test5Result"></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 6: Full Breach Check</h2>
+        <input type="text" id="testPassword" placeholder="Enter password to test" value="password123">
+        <button onclick="test6()">Run Test 6</button>
+        <p id="test6Result"></p>
+    </div>
+
+    <h2>📋 Console Output:</h2>
+    <div id="results"></div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const span = document.createElement('span');
+            span.className = type;
+            span.textContent = `[${timestamp}] ${message}
+`;
+            resultsDiv.appendChild(span);
+            console.log(message);
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        // Test 1: Basic JavaScript
+        function test1() {
+            clearResults();
+            log('=== TEST 1: Basic JavaScript ===', 'info');
+            try {
+                const testVar = "Hello World";
+                document.getElementById('test1Result').innerHTML = `<span class="success">✅ JavaScript is working! Test variable: ${testVar}</span>`;
+                log('✅ Basic JavaScript: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test1Result').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+                log('❌ Basic JavaScript: FAILED - ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Test 2: Crypto API
+        function test2() {
+            clearResults();
+            log('=== TEST 2: Crypto API ===', 'info');
+            try {
+                if (!window.crypto || !window.crypto.getRandomValues) {
+                    throw new Error('Crypto API not available');
+                }
+
+                const array = new Uint8Array(10);
+                crypto.getRandomValues(array);
+
+                log('✅ Crypto API available', 'success');
+                log('Random values: ' + Array.from(array).join(', '), 'info');
+
+                document.getElementById('test2Result').innerHTML = `<span class="success">✅ Crypto API is working! Random values generated.</span>`;
+                log('✅ Crypto API: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test2Result').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+                log('❌ Crypto API: FAILED - ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Test 3: SHA-1 Hashing
+        async function test3() {
+            clearResults();
+            log('=== TEST 3: SHA-1 Hashing ===', 'info');
+            try {
+                if (!window.crypto || !window.crypto.subtle) {
+                    throw new Error('Web Crypto API not available');
+                }
+
+                const testString = "password123";
+                log('Hashing test string: ' + testString, 'info');
+
+                const encoder = new TextEncoder();
+                const data = encoder.encode(testString);
+                const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+                log('SHA-1 Hash: ' + hashHex, 'success');
+
+                document.getElementById('test3Result').innerHTML = `<span class="success">✅ SHA-1 hashing works!<br>Hash: ${hashHex}</span>`;
+                log('✅ SHA-1 Hashing: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test3Result').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+                log('❌ SHA-1 Hashing: FAILED - ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Test 4: HIBP API Connection
+        async function test4() {
+            clearResults();
+            log('=== TEST 4: HIBP API Connection ===', 'info');
+            try {
+                log('Testing API connection...', 'info');
+
+                // Test with known hash prefix (for "password")
+                const testPrefix = '5BAA6';
+                log('Testing with prefix: ' + testPrefix, 'info');
+
+                const response = await fetch(`https://api.pwnedpasswords.com/range/${testPrefix}`, {
+                    headers: {
+                        'Add-Padding': 'true'
+                    }
+                });
+
+                log('API Response Status: ' + response.status, 'info');
+
+                if (!response.ok) {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+
+                const text = await response.text();
+                const lines = text.split('\n').length;
+
+                log(`✅ API responded with ${lines} hash entries`, 'success');
+                log('First 3 entries:', 'info');
+                text.split('\n').slice(0, 3).forEach(line => log('  ' + line, 'info'));
+
+                document.getElementById('test4Result').innerHTML = `<span class="success">✅ HIBP API is working!<br>Received ${lines} hash entries</span>`;
+                log('✅ HIBP API Connection: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test4Result').innerHTML = `<span class="error">❌ Error: ${error.message}<br>Check CORS or network connection</span>`;
+                log('❌ HIBP API Connection: FAILED - ' + error.message, 'error');
+                log('Possible issues:', 'error');
+                log('  1. No internet connection', 'error');
+                log('  2. CORS blocked (not likely with HIBP)', 'error');
+                log('  3. API is down', 'error');
+                return false;
+            }
+        }
+
+        // Test 5: Full Password Generation
+        function test5() {
+            clearResults();
+            log('=== TEST 5: Full Password Generation ===', 'info');
+            try {
+                const length = 16;
+                const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+
+                log('Generating password with length: ' + length, 'info');
+                log('Charset size: ' + charset.length, 'info');
+
+                let password = '';
+                const array = new Uint8Array(length);
+                crypto.getRandomValues(array);
+
+                for (let i = 0; i < length; i++) {
+                    password += charset[array[i] % charset.length];
+                }
+
+                log('Generated password: ' + password, 'success');
+
+                document.getElementById('test5Result').innerHTML = `<span class="success">✅ Password generated!<br><strong>${password}</strong></span>`;
+                log('✅ Full Password Generation: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test5Result').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+                log('❌ Full Password Generation: FAILED - ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Test 6: Full Breach Check
+        async function test6() {
+            clearResults();
+            log('=== TEST 6: Full Breach Check ===', 'info');
+            try {
+                const password = document.getElementById('testPassword').value;
+
+                if (!password) {
+                    throw new Error('Please enter a password to test');
+                }
+
+                log('Testing password: ' + password, 'info');
+
+                // Hash the password
+                log('Step 1: Hashing password...', 'info');
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+                log('SHA-1 Hash: ' + hashHex, 'info');
+
+                const prefix = hashHex.substring(0, 5);
+                const suffix = hashHex.substring(5);
+
+                log('Prefix (sent to API): ' + prefix, 'info');
+                log('Suffix (checked locally): ' + suffix, 'info');
+
+                // Call API
+                log('Step 2: Calling HIBP API...', 'info');
+                const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+                    headers: {
+                        'Add-Padding': 'true'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+
+                const text = await response.text();
+                const hashes = text.split('\n');
+
+                log(`Step 3: Received ${hashes.length} hashes from API`, 'info');
+
+                // Find match
+                log('Step 4: Searching for match...', 'info');
+                let breachCount = 0;
+                for (const line of hashes) {
+                    const [hashSuffix, count] = line.split(':');
+                    if (hashSuffix.trim() === suffix) {
+                        breachCount = parseInt(count);
+                        break;
+                    }
+                }
+
+                if (breachCount > 0) {
+                    log(`⚠️ PASSWORD FOUND IN BREACHES: ${breachCount.toLocaleString()} times`, 'error');
+                    document.getElementById('test6Result').innerHTML = `<span class="error">⚠️ Password compromised!<br>Found ${breachCount.toLocaleString()} times in breaches<br><strong>DO NOT USE THIS PASSWORD</strong></span>`;
+                } else {
+                    log('✅ Password NOT found in breaches', 'success');
+                    document.getElementById('test6Result').innerHTML = `<span class="success">✅ Password is safe!<br>Not found in breach database</span>`;
+                }
+
+                log('✅ Full Breach Check: PASSED', 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('test6Result').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+                log('❌ Full Breach Check: FAILED - ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Auto-run Test 1 on page load
+        window.addEventListener('load', () => {
+            log('🚀 Page loaded successfully', 'success');
+            log('Browser: ' + navigator.userAgent, 'info');
+            log('HTTPS: ' + (window.location.protocol === 'https:' ? 'Yes ✅' : 'No ❌'), 'info');
+            setTimeout(test1, 500);
+        });
+    </script>
+</body>
+</html>
