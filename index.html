@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Security Suite | TheGhostPacket</title>
+    <title>Password Generator & Analyzer | TheGhostPacket</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -20,7 +20,6 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --info: #8b5cf6;
         }
 
         * {
@@ -53,8 +52,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .header-title {
@@ -71,1061 +68,1071 @@
             background-clip: text;
         }
 
-        .header-stats {
+        .header-actions {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
             font-size: 0.9rem;
         }
 
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-muted);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
         }
 
-        .stat-value {
-            color: var(--accent);
-            font-weight: 600;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
         }
 
-        .container {
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .main-content {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        .grid {
+        .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
 
-        .card {
+        .tool-card {
             background: var(--bg-card);
-            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            border: 1px solid var(--border);
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 12px rgba(59, 130, 246, 0.15);
-        }
-
-        .card-header {
+        .tool-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
         }
 
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 10px;
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .tool-title {
             font-size: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
+            color: var(--text);
             margin-bottom: 0.5rem;
+        }
+
+        .tool-subtitle {
             color: var(--text-muted);
             font-size: 0.9rem;
-            font-weight: 500;
         }
 
-        .input-group {
-            position: relative;
+        /* Generator Section */
+        .generator-options {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-group {
             display: flex;
+            flex-direction: column;
             gap: 0.5rem;
         }
 
-        input[type="text"],
-        input[type="password"],
-        input[type="number"] {
-            flex: 1;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
+        .option-label {
             color: var(--text);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-icon {
-            background: var(--bg-dark);
-            padding: 0.75rem;
-            min-width: 42px;
-            justify-content: center;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #059669);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #dc2626);
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d97706);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--bg-hover), var(--border));
         }
 
         .slider-container {
-            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        input[type="range"] {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--bg-dark);
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-hover);
             outline: none;
             -webkit-appearance: none;
         }
 
-        input[type="range"]::-webkit-slider-thumb {
+        .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: var(--primary);
             cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
         }
 
-        .checkbox-group {
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        .slider-value {
+            min-width: 3rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .checkbox-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .strength-meter {
-            height: 8px;
-            background: var(--bg-dark);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
+        .checkbox-item:hover {
+            background: rgba(59, 130, 246, 0.2);
         }
 
-        .strength-fill {
-            height: 100%;
-            transition: all 0.3s ease;
-            border-radius: 4px;
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
         }
 
-        .strength-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.5rem;
+        .checkbox-label {
+            color: var(--text);
             font-size: 0.9rem;
-        }
-
-        .breach-result {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 2px solid;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .breach-safe {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: var(--success);
-        }
-
-        .breach-danger {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: var(--danger);
-        }
-
-        .breach-loading {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: var(--info);
-        }
-
-        .breach-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .breach-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .breach-content h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .breach-count {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--danger);
-            margin: 1rem 0;
-        }
-
-        .feedback-list {
-            list-style: none;
-            margin-top: 1rem;
-        }
-
-        .feedback-list li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-muted);
-        }
-
-        .feedback-list li i {
-            color: var(--accent);
+            cursor: pointer;
+            flex: 1;
         }
 
         .password-display {
             background: var(--bg-dark);
-            padding: 1rem;
+            border: 2px solid var(--border);
             border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .password-text {
             font-family: 'Courier New', monospace;
             font-size: 1.1rem;
-            word-break: break-all;
-            margin: 1rem 0;
+            color: var(--text);
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            resize: none;
+            min-height: 2.5rem;
         }
 
-        .loading-spinner {
-            border: 3px solid var(--bg-hover);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+        .password-actions {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--bg-card);
+        .action-btn {
+            background: var(--bg-hover);
             border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Analyzer Section */
+        .analyzer-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
             border-radius: 8px;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .analyzer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .strength-meter {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .strength-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .strength-label {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .strength-score {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .strength-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: var(--bg-hover);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: all 0.5s ease;
+        }
+
+        .strength-very-weak { background: #dc2626; }
+        .strength-weak { background: #ea580c; }
+        .strength-fair { background: var(--warning); }
+        .strength-good { background: #65a30d; }
+        .strength-strong { background: var(--success); }
+
+        .strength-details {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .check { color: var(--success); }
+        .cross { color: var(--danger); }
+        .warning { color: var(--warning); }
+
+        /* Security Tips */
+        .security-tips {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .tips-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            z-index: 1000;
-            animation: slideInUp 0.3s ease;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .tips-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .tips-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
         }
 
-        .tip-card {
-            background: var(--bg-dark);
-            padding: 1.5rem;
+        .tip-item {
+            background: rgba(59, 130, 246, 0.1);
             border-radius: 8px;
+            padding: 1rem;
             border-left: 4px solid var(--primary);
         }
 
-        .tip-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .tip-title {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
         }
 
-        .bulk-passwords {
-            max-height: 400px;
-            overflow-y: auto;
+        .tip-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Bulk Generator */
+        .bulk-section {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .bulk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .bulk-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .number-input {
+            width: 100px;
+            padding: 0.5rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .passwords-list {
             background: var(--bg-dark);
             border-radius: 8px;
             padding: 1rem;
-            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
         }
 
-        .bulk-password-item {
+        .password-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: var(--bg-card);
-            border-radius: 6px;
+            border-bottom: 1px solid var(--border);
             font-family: 'Courier New', monospace;
         }
 
+        .password-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .grid {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .tools-grid {
                 grid-template-columns: 1fr;
             }
 
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
+            .checkbox-grid {
+                grid-template-columns: 1fr;
             }
 
-            .header-stats {
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bulk-controls {
                 flex-direction: column;
-                gap: 0.5rem;
+                align-items: stretch;
             }
         }
 
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .copy-success {
+            animation: copySuccess 0.3s ease;
+        }
+
+        @keyframes copySuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background: var(--success); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="header-content">
             <div class="header-title">
-                <div class="card-icon">
-                    <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-shield-alt" style="color: var(--primary); font-size: 2rem;"></i>
+                <h1>Password Generator & Analyzer</h1>
+            </div>
+            <div class="header-actions">
+                <a href="https://github.com/TheGhostPacket" class="btn btn-primary" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="tools-grid">
+            <!-- Password Generator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div>
+                        <h2 class="tool-title">Password Generator</h2>
+                        <p class="tool-subtitle">Create secure, random passwords</p>
+                    </div>
+                </div>
+
+                <div class="generator-options">
+                    <div class="option-group">
+                        <label class="option-label">
+                            <i class="fas fa-ruler-horizontal"></i>
+                            Password Length
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" class="slider" id="lengthSlider" min="4" max="128" value="16">
+                            <span class="slider-value" id="lengthValue">16</span>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">
+                            <i class="fas fa-cogs"></i>
+                            Character Options
+                        </label>
+                        <div class="checkbox-grid">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="uppercase" checked>
+                                <label class="checkbox-label" for="uppercase">Uppercase (A-Z)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="lowercase" checked>
+                                <label class="checkbox-label" for="lowercase">Lowercase (a-z)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="numbers" checked>
+                                <label class="checkbox-label" for="numbers">Numbers (0-9)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symbols" checked>
+                                <label class="checkbox-label" for="symbols">Symbols (!@#$%)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ambiguous">
+                                <label class="checkbox-label" for="ambiguous">Ambiguous (0OIl1)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="password-display">
+                    <textarea class="password-text" id="generatedPassword" placeholder="Click 'Generate Password' to create a secure password..." readonly></textarea>
+                    <div class="password-actions">
+                        <button class="action-btn" id="copyBtn" onclick="copyPassword()" title="Copy to clipboard">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="action-btn" onclick="togglePasswordVisibility()" title="Show/Hide password">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generatePassword()" style="width: 100%;">
+                    <i class="fas fa-dice"></i>
+                    Generate Password
+                </button>
+            </div>
+
+            <!-- Password Analyzer -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background: linear-gradient(135deg, var(--success), #059669); color: white;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div>
+                        <h2 class="tool-title">Password Analyzer</h2>
+                        <p class="tool-subtitle">Check password strength & security</p>
+                    </div>
+                </div>
+
+                <input type="password" class="analyzer-input" id="analyzePassword" 
+                       placeholder="Enter a password to analyze its strength..." 
+                       oninput="analyzePassword()">
+
+                <div class="strength-meter" id="strengthMeter" style="display: none;">
+                    <div class="strength-header">
+                        <span class="strength-label">Password Strength</span>
+                        <span class="strength-score" id="strengthScore">0/5</span>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-details" id="strengthDetails">
+                        <!-- Strength details will be populated here -->
+                    </div>
+                </div>
+
+                <button class="btn btn-outline" onclick="toggleAnalyzerVisibility()" style="width: 100%;">
+                    <i class="fas fa-eye" id="analyzerEyeIcon"></i>
+                    <span id="analyzerToggleText">Show Password</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="security-tips">
+            <div class="tips-header">
+                <div class="tool-icon" style="background: linear-gradient(135deg, var(--warning), #d97706); color: white; width: 50px; height: 50px; font-size: 1.3rem;">
+                    <i class="fas fa-lightbulb"></i>
                 </div>
                 <div>
-                    <h1>Password Security Suite</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Generate • Analyze • Check Breaches</p>
+                    <h3 class="tool-title" style="font-size: 1.3rem;">Security Best Practices</h3>
+                    <p class="tool-subtitle">Follow these tips to stay secure online</p>
                 </div>
             </div>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <i class="fas fa-key"></i>
-                    <span>Generated: <span class="stat-value" id="statsGenerated">0</span></span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-search"></i>
-                    <span>Checked: <span class="stat-value" id="statsChecked">0</span></span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-shield-virus"></i>
-                    <span>Breaches Found: <span class="stat-value" id="statsBreaches">0</span></span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="grid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-random"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Password Generator</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Create cryptographically secure passwords</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Password Length: <span id="lengthValue">16</span></label>
-                    <input type="range" id="passwordLength" min="4" max="128" value="16">
-                </div>
-
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="includeUppercase" checked>
-                        <label for="includeUppercase">Uppercase (A-Z)</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="includeLowercase" checked>
-                        <label for="includeLowercase">Lowercase (a-z)</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="includeNumbers" checked>
-                        <label for="includeNumbers">Numbers (0-9)</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="includeSymbols" checked>
-                        <label for="includeSymbols">Symbols (!@#$)</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="excludeAmbiguous">
-                        <label for="excludeAmbiguous">Exclude Ambiguous (0OIl1)</label>
-                    </div>
-                </div>
-
-                <div class="password-display" id="generatedPassword">Click "Generate Password" to start</div>
-
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="btn" onclick="generatePassword()">
-                        <i class="fas fa-sync-alt"></i> Generate Password
-                    </button>
-                    <button class="btn btn-icon" onclick="copyPassword()" title="Copy">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="btn btn-icon" onclick="togglePasswordVisibility()" title="Show/Hide">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Breach Checker</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Check if your password has been compromised</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Enter Password to Check</label>
-                    <div class="input-group">
-                        <input type="password" id="breachCheckPassword" placeholder="Enter password...">
-                        <button class="btn btn-icon" onclick="toggleBreachInputVisibility()">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="btn" onclick="checkBreach()">
-                        <i class="fas fa-search"></i> Check for Breaches
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearBreachCheck()">
-                        <i class="fas fa-times"></i> Clear
-                    </button>
-                </div>
-
-                <div id="breachResult" class="breach-result"></div>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Password Analyzer</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Real-time strength analysis</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Password to Analyze</label>
-                    <div class="input-group">
-                        <input type="password" id="analyzePassword" placeholder="Enter password to analyze...">
-                        <button class="btn btn-icon" onclick="toggleAnalyzeInputVisibility()">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="strength-meter">
-                    <div class="strength-fill" id="strengthFill"></div>
-                </div>
-
-                <div class="strength-info">
-                    <span id="strengthText">No password entered</span>
-                    <span id="strengthEntropy"></span>
-                </div>
-
-                <ul class="feedback-list" id="feedbackList">
-                    <li><i class="fas fa-info-circle"></i> Enter a password to see detailed analysis</li>
-                </ul>
-
-                <div style="margin-top: 1rem;">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="autoCheckBreach" checked>
-                        <label for="autoCheckBreach">Auto-check for data breaches</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Bulk Password Generator</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Generate multiple passwords at once</p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Number of Passwords (1-50)</label>
-                    <input type="number" id="bulkCount" min="1" max="50" value="10">
-                </div>
-
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                    <button class="btn" onclick="generateBulkPasswords()">
-                        <i class="fas fa-th"></i> Generate Passwords
-                    </button>
-                    <button class="btn btn-success" onclick="exportPasswords()">
-                        <i class="fas fa-download"></i> Export
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearBulk()">
-                        <i class="fas fa-trash"></i> Clear
-                    </button>
-                </div>
-
-                <div id="bulkPasswordsContainer" class="bulk-passwords" style="display: none;"></div>
-            </div>
-        </div>
-
-        <div class="tips-section">
-            <h2 style="margin-bottom: 0.5rem;">🛡️ Security Best Practices</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Follow these guidelines to protect your accounts</p>
-
             <div class="tips-grid">
-                <div class="tip-card">
-                    <div class="tip-icon">🔐</div>
-                    <h3>Use Unique Passwords</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Never reuse passwords across multiple accounts. Each account should have its own unique password.</p>
+                <div class="tip-item">
+                    <div class="tip-title">🔐 Use Unique Passwords</div>
+                    <div class="tip-description">Never reuse passwords across multiple accounts. Each account should have its own unique password.</div>
                 </div>
-                <div class="tip-card">
-                    <div class="tip-icon">📏</div>
-                    <h3>Length Matters</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Longer passwords are exponentially harder to crack. Aim for at least 12-16 characters.</p>
+                <div class="tip-item">
+                    <div class="tip-title">📏 Length Matters</div>
+                    <div class="tip-description">Longer passwords are exponentially harder to crack. Aim for at least 12-16 characters.</div>
                 </div>
-                <div class="tip-card">
-                    <div class="tip-icon">🎯</div>
-                    <h3>Mix Character Types</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Combine uppercase, lowercase, numbers, and symbols for maximum strength.</p>
+                <div class="tip-item">
+                    <div class="tip-title">🎯 Mix Character Types</div>
+                    <div class="tip-description">Combine uppercase, lowercase, numbers, and symbols for maximum strength.</div>
                 </div>
-                <div class="tip-card">
-                    <div class="tip-icon">🚫</div>
-                    <h3>Avoid Personal Info</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Don't use names, birthdays, addresses, or other personal information in passwords.</p>
+                <div class="tip-item">
+                    <div class="tip-title">🚫 Avoid Personal Info</div>
+                    <div class="tip-description">Don't use names, birthdays, addresses, or other personal information in passwords.</div>
                 </div>
-                <div class="tip-card">
-                    <div class="tip-icon">🔄</div>
-                    <h3>Regular Updates</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Change passwords regularly, especially for critical accounts like banking and email.</p>
+                <div class="tip-item">
+                    <div class="tip-title">🔄 Regular Updates</div>
+                    <div class="tip-description">Change passwords regularly, especially for critical accounts like banking and email.</div>
                 </div>
-                <div class="tip-card">
-                    <div class="tip-icon">📱</div>
-                    <h3>Enable 2FA</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Use two-factor authentication whenever possible for an extra layer of security.</p>
+                <div class="tip-item">
+                    <div class="tip-title">📱 Use 2FA</div>
+                    <div class="tip-description">Enable two-factor authentication whenever possible for an extra layer of security.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Generator -->
+        <div class="bulk-section">
+            <div class="bulk-header">
+                <div>
+                    <h3 class="tool-title" style="font-size: 1.3rem;">
+                        <i class="fas fa-list"></i> Bulk Password Generator
+                    </h3>
+                    <p class="tool-subtitle">Generate multiple passwords at once</p>
+                </div>
+                <button class="btn btn-success" onclick="generateBulkPasswords()">
+                    <i class="fas fa-magic"></i>
+                    Generate Passwords
+                </button>
+            </div>
+            <div class="bulk-controls">
+                <label style="color: var(--text);">Number of passwords:</label>
+                <input type="number" class="number-input" id="bulkCount" value="5" min="1" max="50">
+                <button class="btn btn-outline" onclick="exportPasswords()">
+                    <i class="fas fa-download"></i>
+                    Export as Text
+                </button>
+                <button class="btn btn-outline" onclick="clearBulkPasswords()">
+                    <i class="fas fa-trash"></i>
+                    Clear All
+                </button>
+            </div>
+            <div class="passwords-list" id="bulkPasswordsList">
+                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                    Click "Generate Passwords" to create multiple secure passwords
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        var stats = {
-            generated: 0,
-            checked: 0,
-            breaches: 0
+        // Password generation characters
+        const characterSets = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
+            ambiguous: '0OIl1'
         };
 
-        function loadStats() {
-            var saved = localStorage.getItem('passwordStats');
-            if (saved) {
-                stats = JSON.parse(saved);
-                updateStatsDisplay();
-            }
+        // Common weak passwords (simplified list)
+        const commonPasswords = [
+            'password', '123456', 'password123', 'admin', 'qwerty', 'letmein',
+            '123456789', 'welcome', 'monkey', '1234567890', 'abc123'
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLengthValue();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            const lengthSlider = document.getElementById('lengthSlider');
+            lengthSlider.addEventListener('input', updateLengthValue);
+
+            // Generate password on checkbox change
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (document.getElementById('generatedPassword').value) {
+                        generatePassword();
+                    }
+                });
+            });
         }
 
-        function updateStatsDisplay() {
-            document.getElementById('statsGenerated').textContent = stats.generated;
-            document.getElementById('statsChecked').textContent = stats.checked;
-            document.getElementById('statsBreaches').textContent = stats.breaches;
-            localStorage.setItem('passwordStats', JSON.stringify(stats));
+        function updateLengthValue() {
+            const slider = document.getElementById('lengthSlider');
+            const value = document.getElementById('lengthValue');
+            value.textContent = slider.value;
+            
+            // Auto-generate if password exists
+            if (document.getElementById('generatedPassword').value) {
+                generatePassword();
+            }
         }
 
         function generatePassword() {
-            var length = document.getElementById('passwordLength').value;
-            var includeUppercase = document.getElementById('includeUppercase').checked;
-            var includeLowercase = document.getElementById('includeLowercase').checked;
-            var includeNumbers = document.getElementById('includeNumbers').checked;
-            var includeSymbols = document.getElementById('includeSymbols').checked;
-            var excludeAmbiguous = document.getElementById('excludeAmbiguous').checked;
+            const length = parseInt(document.getElementById('lengthSlider').value);
+            const options = {
+                uppercase: document.getElementById('uppercase').checked,
+                lowercase: document.getElementById('lowercase').checked,
+                numbers: document.getElementById('numbers').checked,
+                symbols: document.getElementById('symbols').checked,
+                ambiguous: document.getElementById('ambiguous').checked
+            };
 
-            var charset = '';
-            var uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            var lowercase = 'abcdefghijklmnopqrstuvwxyz';
-            var numbers = '0123456789';
-            var symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-            var ambiguous = '0OIl1';
-
-            if (includeUppercase) charset += uppercase;
-            if (includeLowercase) charset += lowercase;
-            if (includeNumbers) charset += numbers;
-            if (includeSymbols) charset += symbols;
-
-            if (excludeAmbiguous) {
-                var filtered = '';
-                for (var i = 0; i < charset.length; i++) {
-                    if (ambiguous.indexOf(charset[i]) === -1) {
-                        filtered += charset[i];
-                    }
-                }
-                charset = filtered;
+            // Build character set
+            let chars = '';
+            if (options.uppercase) chars += characterSets.uppercase;
+            if (options.lowercase) chars += characterSets.lowercase;
+            if (options.numbers) chars += characterSets.numbers;
+            if (options.symbols) chars += characterSets.symbols;
+            
+            // Remove ambiguous characters if not selected
+            if (!options.ambiguous) {
+                chars = chars.split('').filter(char => 
+                    !characterSets.ambiguous.includes(char)
+                ).join('');
             }
 
-            if (charset === '') {
-                showToast('Please select at least one character type', 'warning');
+            if (!chars) {
+                alert('Please select at least one character type');
                 return;
             }
 
-            var password = '';
-            var array = new Uint8Array(length);
-            crypto.getRandomValues(array);
+            // Generate password
+            let password = '';
+            
+            // Ensure at least one character from each selected type
+            if (options.uppercase) password += getRandomChar(characterSets.uppercase);
+            if (options.lowercase) password += getRandomChar(characterSets.lowercase);
+            if (options.numbers) password += getRandomChar(characterSets.numbers);
+            if (options.symbols) password += getRandomChar(characterSets.symbols);
 
-            for (var i = 0; i < length; i++) {
-                password += charset[array[i] % charset.length];
+            // Fill remaining length
+            for (let i = password.length; i < length; i++) {
+                password += getRandomChar(chars);
             }
 
-            document.getElementById('generatedPassword').textContent = password;
-            stats.generated++;
-            updateStatsDisplay();
-            showToast('Password generated successfully!', 'success');
+            // Shuffle the password
+            password = password.split('').sort(() => 0.5 - Math.random()).join('');
+
+            document.getElementById('generatedPassword').value = password;
+            
+            // Analyze the generated password
+            document.getElementById('analyzePassword').value = password;
+            analyzePassword();
         }
 
-        function checkBreach() {
-            var password = document.getElementById('breachCheckPassword').value;
-
-            if (!password) {
-                showToast('Please enter a password to check', 'warning');
-                return;
-            }
-
-            var resultDiv = document.getElementById('breachResult');
-            resultDiv.style.display = 'block';
-            resultDiv.className = 'breach-result breach-loading';
-            resultDiv.innerHTML = '<div class="breach-header"><div class="loading-spinner"></div><div class="breach-content"><h3>Checking password...</h3><p style="color: var(--text-muted);">Securely verifying against 850+ million breached passwords</p></div></div>';
-
-            var encoder = new TextEncoder();
-            var data = encoder.encode(password);
-
-            crypto.subtle.digest('SHA-1', data).then(function(hashBuffer) {
-                var hashArray = Array.from(new Uint8Array(hashBuffer));
-                var hashHex = hashArray.map(function(b) {
-                    return b.toString(16).padStart(2, '0');
-                }).join('').toUpperCase();
-
-                var prefix = hashHex.substring(0, 5);
-                var suffix = hashHex.substring(5);
-
-                return fetch('https://api.pwnedpasswords.com/range/' + prefix, {
-                    headers: {
-                        'Add-Padding': 'true'
-                    }
-                }).then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('API request failed');
-                    }
-                    return response.text();
-                }).then(function(text) {
-                    var hashes = text.split('
-');
-                    var breachCount = 0;
-
-                    for (var i = 0; i < hashes.length; i++) {
-                        var parts = hashes[i].split(':');
-                        var hashSuffix = parts[0];
-                        if (hashSuffix.trim() === suffix) {
-                            breachCount = parseInt(parts[1]);
-                            break;
-                        }
-                    }
-
-                    stats.checked++;
-                    if (breachCount > 0) {
-                        stats.breaches++;
-                    }
-                    updateStatsDisplay();
-                    displayBreachResult(breachCount);
-                });
-            }).catch(function(error) {
-                console.error('Breach check error:', error);
-                resultDiv.className = 'breach-result breach-danger';
-                resultDiv.innerHTML = '<div class="breach-header"><div class="breach-icon" style="background: var(--danger);"><i class="fas fa-exclamation-triangle"></i></div><div class="breach-content"><h3>Error checking password</h3><p style="color: var(--text-muted);">Please try again later</p></div></div>';
-            });
-        }
-
-        function displayBreachResult(count) {
-            var resultDiv = document.getElementById('breachResult');
-
-            if (count === 0) {
-                resultDiv.className = 'breach-result breach-safe';
-                resultDiv.innerHTML = '<div class="breach-header"><div class="breach-icon" style="background: var(--success);"><i class="fas fa-check-circle"></i></div><div class="breach-content"><h3>✨ Good news — No breaches found!</h3><p style="color: var(--text-muted);">This password hasn't appeared in any known data breaches</p></div></div><ul class="feedback-list"><li><i class="fas fa-shield-alt"></i> Password not found in 850+ million breached passwords</li><li><i class="fas fa-lock"></i> This password appears to be unique</li><li><i class="fas fa-info-circle"></i> However, always use strong, unique passwords for each account</li></ul>';
-            } else {
-                var formatted = count.toLocaleString();
-                resultDiv.className = 'breach-result breach-danger';
-                resultDiv.innerHTML = '<div class="breach-header"><div class="breach-icon" style="background: var(--danger);"><i class="fas fa-exclamation-circle"></i></div><div class="breach-content"><h3>⚠️ Oh no — Password Compromised!</h3><p style="color: var(--text-muted);">This password has been exposed in data breaches</p></div></div><div class="breach-count"><i class="fas fa-database"></i> Seen ' + formatted + ' times in breaches</div><ul class="feedback-list"><li><i class="fas fa-times-circle" style="color: var(--danger);"></i> This password is publicly known and unsafe</li><li><i class="fas fa-user-lock" style="color: var(--danger);"></i> Change this password immediately on all accounts</li><li><i class="fas fa-robot" style="color: var(--danger);"></i> Attackers use these passwords in automated attacks</li></ul><button class="btn btn-success" onclick="generateAndReplaceBreach()" style="margin-top: 1rem; width: 100%;"><i class="fas fa-magic"></i> Generate Safe Replacement Password</button>';
-                showToast('⚠️ Password found in ' + formatted + ' breaches!', 'danger');
-            }
-        }
-
-        function generateAndReplaceBreach() {
-            generatePassword();
-            var newPassword = document.getElementById('generatedPassword').textContent;
-            document.getElementById('breachCheckPassword').value = newPassword;
-            showToast('New secure password generated! Consider using this instead.', 'success');
-            document.getElementById('generatedPassword').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            var passwordDiv = document.getElementById('generatedPassword');
-            passwordDiv.style.animation = 'none';
-            setTimeout(function() {
-                passwordDiv.style.animation = 'pulse 1s ease-in-out 3';
-            }, 10);
-        }
-
-        function clearBreachCheck() {
-            document.getElementById('breachCheckPassword').value = '';
-            document.getElementById('breachResult').style.display = 'none';
-        }
-
-        function analyzePassword() {
-            var password = document.getElementById('analyzePassword').value;
-
-            if (!password) {
-                document.getElementById('strengthText').textContent = 'No password entered';
-                document.getElementById('strengthEntropy').textContent = '';
-                document.getElementById('strengthFill').style.width = '0%';
-                document.getElementById('feedbackList').innerHTML = '<li><i class="fas fa-info-circle"></i> Enter a password to see detailed analysis</li>';
-                return;
-            }
-
-            var score = 0;
-            var feedback = [];
-
-            if (password.length >= 8) score += 1;
-            if (password.length >= 12) score += 1;
-            if (password.length >= 16) score += 1;
-
-            if (/[a-z]/.test(password)) score += 0.5;
-            if (/[A-Z]/.test(password)) score += 0.5;
-            if (/[0-9]/.test(password)) score += 0.5;
-            if (/[^a-zA-Z0-9]/.test(password)) score += 0.5;
-
-            if (/(.){2,}/.test(password)) score -= 0.5;
-            if (/012|123|234|345|456|567|678|789|abc|bcd|cde/.test(password.toLowerCase())) score -= 0.5;
-
-            score = Math.max(0, Math.min(5, score));
-
-            var entropy = calculateEntropy(password);
-
-            if (password.length < 8) {
-                feedback.push('<li><i class="fas fa-times-circle" style="color: var(--danger);"></i> Password is too short (minimum 8 characters)</li>');
-            } else if (password.length >= 16) {
-                feedback.push('<li><i class="fas fa-check-circle" style="color: var(--success);"></i> Excellent length (' + password.length + ' characters)</li>');
-            } else if (password.length >= 12) {
-                feedback.push('<li><i class="fas fa-check-circle" style="color: var(--success);"></i> Good length (' + password.length + ' characters)</li>');
-            } else {
-                feedback.push('<li><i class="fas fa-info-circle"></i> Consider using 12+ characters</li>');
-            }
-
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
-                feedback.push('<li><i class="fas fa-check-circle" style="color: var(--success);"></i> Contains mixed case letters</li>');
-            } else {
-                feedback.push('<li><i class="fas fa-times-circle" style="color: var(--danger);"></i> Add both uppercase and lowercase letters</li>');
-            }
-
-            if (/[0-9]/.test(password)) {
-                feedback.push('<li><i class="fas fa-check-circle" style="color: var(--success);"></i> Contains numbers</li>');
-            } else {
-                feedback.push('<li><i class="fas fa-times-circle" style="color: var(--danger);"></i> Add numbers for more security</li>');
-            }
-
-            if (/[^a-zA-Z0-9]/.test(password)) {
-                feedback.push('<li><i class="fas fa-check-circle" style="color: var(--success);"></i> Contains special characters</li>');
-            } else {
-                feedback.push('<li><i class="fas fa-info-circle"></i> Consider adding symbols (!@#$%)</li>');
-            }
-
-            var strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-            var strengthColors = ['#ef4444', '#f59e0b', '#eab308', '#10b981', '#059669'];
-            var strengthIndex = Math.min(Math.floor(score), 4);
-
-            document.getElementById('strengthText').textContent = strengthText[strengthIndex];
-            document.getElementById('strengthEntropy').textContent = entropy + ' bits entropy';
-            document.getElementById('strengthFill').style.width = (score * 20) + '%';
-            document.getElementById('strengthFill').style.background = strengthColors[strengthIndex];
-            document.getElementById('feedbackList').innerHTML = feedback.join('');
-
-            if (document.getElementById('autoCheckBreach').checked && password.length >= 4) {
-                debounceBreachCheck(password);
-            }
-        }
-
-        var breachCheckTimeout;
-        function debounceBreachCheck(password) {
-            clearTimeout(breachCheckTimeout);
-            breachCheckTimeout = setTimeout(function() {
-                document.getElementById('breachCheckPassword').value = password;
-                checkBreach();
-            }, 1000);
-        }
-
-        function calculateEntropy(password) {
-            var charsetSize = 0;
-            if (/[a-z]/.test(password)) charsetSize += 26;
-            if (/[A-Z]/.test(password)) charsetSize += 26;
-            if (/[0-9]/.test(password)) charsetSize += 10;
-            if (/[^a-zA-Z0-9]/.test(password)) charsetSize += 33;
-            var entropy = password.length * Math.log2(charsetSize);
-            return Math.round(entropy);
-        }
-
-        function generateBulkPasswords() {
-            var count = parseInt(document.getElementById('bulkCount').value);
-
-            if (count < 1 || count > 50) {
-                showToast('Please enter a number between 1 and 50', 'warning');
-                return;
-            }
-
-            var container = document.getElementById('bulkPasswordsContainer');
-            container.innerHTML = '';
-            container.style.display = 'block';
-
-            for (var i = 0; i < count; i++) {
-                generatePassword();
-                var password = document.getElementById('generatedPassword').textContent;
-                var item = document.createElement('div');
-                item.className = 'bulk-password-item';
-                item.innerHTML = '<span>' + (i + 1) + '. ' + password + '</span><button class="btn btn-icon" onclick="copyText('' + password + '')"><i class="fas fa-copy"></i></button>';
-                container.appendChild(item);
-            }
-
-            showToast('Generated ' + count + ' secure passwords!', 'success');
-        }
-
-        function exportPasswords() {
-            var container = document.getElementById('bulkPasswordsContainer');
-            var items = container.querySelectorAll('.bulk-password-item span');
-
-            if (items.length === 0) {
-                showToast('Generate passwords first', 'warning');
-                return;
-            }
-
-            var content = 'Generated Passwords - ' + new Date().toLocaleString() + '
-
-';
-            for (var i = 0; i < items.length; i++) {
-                content += items[i].textContent + '
-';
-            }
-
-            var blob = new Blob([content], { type: 'text/plain' });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'passwords_' + Date.now() + '.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Passwords exported successfully!', 'success');
-        }
-
-        function clearBulk() {
-            document.getElementById('bulkPasswordsContainer').innerHTML = '';
-            document.getElementById('bulkPasswordsContainer').style.display = 'none';
-            document.getElementById('bulkCount').value = 10;
+        function getRandomChar(str) {
+            return str.charAt(Math.floor(Math.random() * str.length));
         }
 
         function copyPassword() {
-            var element = document.getElementById('generatedPassword');
-            var text = element.textContent;
-            if (text && text !== 'Click "Generate Password" to start') {
-                navigator.clipboard.writeText(text).then(function() {
-                    showToast('Password copied to clipboard!', 'success');
-                });
+            const passwordField = document.getElementById('generatedPassword');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            passwordField.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            copyBtn.classList.add('copy-success');
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+            
+            setTimeout(() => {
+                copyBtn.classList.remove('copy-success');
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            }, 1000);
+        }
+
+        let passwordVisible = false;
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('generatedPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            passwordVisible = !passwordVisible;
+            
+            if (passwordVisible) {
+                passwordField.style.webkitTextSecurity = 'none';
+                passwordField.style.textSecurity = 'none';
+                eyeIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordField.style.webkitTextSecurity = 'disc';
+                passwordField.style.textSecurity = 'disc';
+                eyeIcon.className = 'fas fa-eye';
             }
         }
 
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                showToast('Copied to clipboard!', 'success');
+        // Password Analysis
+        function analyzePassword() {
+            const password = document.getElementById('analyzePassword').value;
+            const strengthMeter = document.getElementById('strengthMeter');
+            
+            if (!password) {
+                strengthMeter.style.display = 'none';
+                return;
+            }
+
+            strengthMeter.style.display = 'block';
+            
+            const analysis = calculatePasswordStrength(password);
+            updateStrengthMeter(analysis);
+        }
+
+        function calculatePasswordStrength(password) {
+            let score = 0;
+            let feedback = [];
+
+            // Length check
+            if (password.length >= 8) {
+                score += 1;
+                feedback.push({icon: 'check', text: 'Length is adequate (8+ characters)', type: 'success'});
+            } else {
+                feedback.push({icon: 'cross', text: 'Too short (needs 8+ characters)', type: 'error'});
+            }
+
+            if (password.length >= 12) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: 'Good length (12+ characters)', type: 'success'});
+            }
+
+            // Character diversity
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumbers = /[0-9]/.test(password);
+            const hasSymbols = /[^A-Za-z0-9]/.test(password);
+
+            if (hasUpper) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: 'Contains uppercase letters', type: 'success'});
+            } else {
+                feedback.push({icon: 'cross', text: 'Missing uppercase letters', type: 'error'});
+            }
+
+            if (hasLower) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: 'Contains lowercase letters', type: 'success'});
+            } else {
+                feedback.push({icon: 'cross', text: 'Missing lowercase letters', type: 'error'});
+            }
+
+            if (hasNumbers) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: 'Contains numbers', type: 'success'});
+            } else {
+                feedback.push({icon: 'cross', text: 'Missing numbers', type: 'error'});
+            }
+
+            if (hasSymbols) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: 'Contains symbols', type: 'success'});
+            } else {
+                feedback.push({icon: 'cross', text: 'Missing symbols', type: 'error'});
+            }
+
+            // Common password check
+            if (commonPasswords.includes(password.toLowerCase())) {
+                score -= 2;
+                feedback.push({icon: 'cross', text: 'This is a common password', type: 'error'});
+            } else {
+                feedback.push({icon: 'check', text: 'Not a common password', type: 'success'});
+            }
+
+            // Sequential/repeated characters
+            if (/(.)\1{2,}/.test(password)) {
+                score -= 0.5;
+                feedback.push({icon: 'warning', text: 'Contains repeated characters', type: 'warning'});
+            }
+
+            if (/012|123|234|345|456|567|678|789|890|abc|bcd|cde/.test(password.toLowerCase())) {
+                score -= 0.5;
+                feedback.push({icon: 'warning', text: 'Contains sequential characters', type: 'warning'});
+            }
+
+            // Calculate entropy (simplified)
+            const entropy = Math.log2(getCharacterSpace(password)) * password.length;
+            if (entropy > 50) {
+                score += 0.5;
+                feedback.push({icon: 'check', text: `High entropy (${Math.round(entropy)} bits)`, type: 'success'});
+            }
+
+            // Normalize score to 0-5
+            score = Math.max(0, Math.min(5, score));
+
+            return {
+                score: score,
+                feedback: feedback,
+                entropy: entropy
+            };
+        }
+
+        function getCharacterSpace(password) {
+            let space = 0;
+            if (/[a-z]/.test(password)) space += 26;
+            if (/[A-Z]/.test(password)) space += 26;
+            if (/[0-9]/.test(password)) space += 10;
+            if (/[^A-Za-z0-9]/.test(password)) space += 32;
+            return space;
+        }
+
+        function updateStrengthMeter(analysis) {
+            const scoreElement = document.getElementById('strengthScore');
+            const fillElement = document.getElementById('strengthFill');
+            const detailsElement = document.getElementById('strengthDetails');
+
+            // Update score
+            scoreElement.textContent = `${Math.round(analysis.score * 10) / 10}/5`;
+
+            // Update strength bar
+            const percentage = (analysis.score / 5) * 100;
+            fillElement.style.width = percentage + '%';
+
+            // Determine strength level and color
+            let strengthClass, strengthText;
+            if (analysis.score < 1) {
+                strengthClass = 'strength-very-weak';
+                strengthText = 'Very Weak';
+            } else if (analysis.score < 2) {
+                strengthClass = 'strength-weak';
+                strengthText = 'Weak';
+            } else if (analysis.score < 3) {
+                strengthClass = 'strength-fair';
+                strengthText = 'Fair';
+            } else if (analysis.score < 4) {
+                strengthClass = 'strength-good';
+                strengthText = 'Good';
+            } else {
+                strengthClass = 'strength-strong';
+                strengthText = 'Strong';
+            }
+
+            fillElement.className = `strength-fill ${strengthClass}`;
+            scoreElement.className = `strength-score ${strengthClass}`;
+
+            // Update feedback
+            detailsElement.innerHTML = analysis.feedback.map(item => `
+                <div class="detail-item">
+                    <i class="fas fa-${item.icon === 'check' ? 'check' : item.icon === 'cross' ? 'times' : 'exclamation-triangle'} detail-icon ${item.type === 'success' ? 'check' : item.type === 'error' ? 'cross' : 'warning'}"></i>
+                    <span>${item.text}</span>
+                </div>
+            `).join('');
+        }
+
+        let analyzerVisible = false;
+        function toggleAnalyzerVisibility() {
+            const passwordField = document.getElementById('analyzePassword');
+            const eyeIcon = document.getElementById('analyzerEyeIcon');
+            const toggleText = document.getElementById('analyzerToggleText');
+            
+            analyzerVisible = !analyzerVisible;
+            
+            if (analyzerVisible) {
+                passwordField.type = 'text';
+                eyeIcon.className = 'fas fa-eye-slash';
+                toggleText.textContent = 'Hide Password';
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.className = 'fas fa-eye';
+                toggleText.textContent = 'Show Password';
+            }
+        }
+
+        // Bulk Password Generation
+        function generateBulkPasswords() {
+            const count = parseInt(document.getElementById('bulkCount').value);
+            const listElement = document.getElementById('bulkPasswordsList');
+            
+            if (count < 1 || count > 50) {
+                alert('Please enter a number between 1 and 50');
+                return;
+            }
+
+            listElement.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                generatePassword(); // Generate using current settings
+                const password = document.getElementById('generatedPassword').value;
+                
+                const passwordItem = document.createElement('div');
+                passwordItem.className = 'password-item fade-in';
+                passwordItem.innerHTML = `
+                    <span style="flex: 1; font-family: 'Courier New', monospace;">${password}</span>
+                    <button class="action-btn" onclick="copyBulkPassword(this, '${password}')" title="Copy">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                `;
+                
+                listElement.appendChild(passwordItem);
+            }
+        }
+
+        function copyBulkPassword(button, password) {
+            navigator.clipboard.writeText(password).then(() => {
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.style.background = 'var(--success)';
+                button.style.color = 'white';
+                
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i>';
+                    button.style.background = '';
+                    button.style.color = '';
+                }, 1000);
             });
         }
 
-        function togglePasswordVisibility() {
-            var element = document.getElementById('generatedPassword');
-            if (element.style.webkitTextSecurity === 'disc' || element.style.webkitTextSecurity === '') {
-                element.style.webkitTextSecurity = 'none';
-            } else {
-                element.style.webkitTextSecurity = 'disc';
+        function exportPasswords() {
+            const passwords = Array.from(document.querySelectorAll('.password-item span'))
+                .map(span => span.textContent)
+                .join('\n');
+            
+            if (!passwords) {
+                alert('No passwords to export. Generate some first!');
+                return;
             }
+
+            const blob = new Blob([passwords], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'generated_passwords.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
 
-        function toggleBreachInputVisibility() {
-            var element = document.getElementById('breachCheckPassword');
-            element.type = element.type === 'password' ? 'text' : 'password';
+        function clearBulkPasswords() {
+            const listElement = document.getElementById('bulkPasswordsList');
+            listElement.innerHTML = `
+                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                    Click "Generate Passwords" to create multiple secure passwords
+                </div>
+            `;
         }
 
-        function toggleAnalyzeInputVisibility() {
-            var element = document.getElementById('analyzePassword');
-            element.type = element.type === 'password' ? 'text' : 'password';
-        }
-
-        function showToast(message, type) {
-            var toast = document.createElement('div');
-            toast.className = 'toast';
-            var icons = {
-                success: 'fa-check-circle',
-                warning: 'fa-exclamation-triangle',
-                danger: 'fa-times-circle',
-                info: 'fa-info-circle'
-            };
-            var colors = {
-                success: 'var(--success)',
-                warning: 'var(--warning)',
-                danger: 'var(--danger)',
-                info: 'var(--info)'
-            };
-            toast.innerHTML = '<i class="fas ' + icons[type] + '" style="color: ' + colors[type] + ';"></i><span>' + message + '</span>';
-            document.body.appendChild(toast);
-            setTimeout(function() {
-                toast.style.animation = 'slideInUp 0.3s ease reverse';
-                setTimeout(function() {
-                    toast.remove();
-                }, 300);
-            }, 3000);
-        }
-
-        document.getElementById('passwordLength').addEventListener('input', function() {
-            document.getElementById('lengthValue').textContent = this.value;
+        // Initialize with a sample password
+        window.addEventListener('load', function() {
+            generatePassword();
         });
-
-        document.getElementById('analyzePassword').addEventListener('input', analyzePassword);
-
-        document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
-                e.preventDefault();
-                generatePassword();
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                if (document.activeElement.id === 'breachCheckPassword') {
-                    checkBreach();
-                }
-            }
-        });
-
-        loadStats();
-        generatePassword();
     </script>
 </body>
 </html>
