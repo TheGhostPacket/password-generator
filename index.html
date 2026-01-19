@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Generator & Analyzer | TheGhostPacket</title>
+    <title>Password Security Suite | TheGhostPacket</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -17,6 +17,7 @@
             --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             --dark: #0f0f23;
             --card-bg: rgba(255, 255, 255, 0.05);
             --card-border: rgba(255, 255, 255, 0.1);
@@ -210,6 +211,7 @@
         }
 
         input[type="text"],
+        input[type="password"],
         input[type="number"],
         textarea {
             width: 100%;
@@ -223,6 +225,7 @@
         }
 
         input[type="text"]:focus,
+        input[type="password"]:focus,
         input[type="number"]:focus,
         textarea:focus {
             outline: none;
@@ -381,6 +384,16 @@
             transform: translateY(0);
         }
 
+        .btn-secondary {
+            background: var(--gradient-4);
+        }
+
+        .btn-small {
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            width: auto;
+        }
+
         .strength-meter {
             margin-top: 1.5rem;
         }
@@ -500,6 +513,208 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
+        /* Vault Styles */
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .vault-search {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .vault-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .vault-empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .vault-empty i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .vault-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .vault-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .vault-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+        }
+
+        .vault-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .vault-item-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .vault-item-username {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .vault-item-password {
+            font-family: 'Courier New', monospace;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .vault-item-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 0.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .icon-btn:hover {
+            background: var(--gradient-3);
+            transform: scale(1.1);
+        }
+
+        .icon-btn.delete:hover {
+            background: var(--gradient-2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .password-mode-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--card-border);
+            border-radius: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .mode-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+        }
+
         footer {
             text-align: center;
             padding: 3rem 2rem;
@@ -558,6 +773,19 @@
             .info-grid {
                 grid-template-columns: 1fr;
             }
+
+            .vault-item {
+                grid-template-columns: 1fr;
+            }
+
+            .vault-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .vault-actions button {
+                width: 100%;
+            }
         }
 
         .toast {
@@ -590,6 +818,19 @@
                 opacity: 1;
             }
         }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-new {
+            background: var(--gradient-5);
+        }
     </style>
 </head>
 <body>
@@ -599,7 +840,7 @@
                 <i class="fas fa-shield-halved"></i>
             </div>
             <h1>Password Security Suite</h1>
-            <p class="subtitle">Generate & Analyze Secure Passwords | TheGhostPacket</p>
+            <p class="subtitle">Generate, Store & Secure Your Passwords | TheGhostPacket</p>
         </header>
 
         <div class="tabs">
@@ -612,10 +853,15 @@
                 Password Analyzer
             </button>
             <button class="tab-btn" onclick="switchTab(2)">
+                <i class="fas fa-vault"></i>
+                Password Vault
+                <span class="badge badge-new">NEW</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab(3)">
                 <i class="fas fa-layer-group"></i>
                 Bulk Generator
             </button>
-            <button class="tab-btn" onclick="switchTab(3)">
+            <button class="tab-btn" onclick="switchTab(4)">
                 <i class="fas fa-lightbulb"></i>
                 Security Tips
             </button>
@@ -629,6 +875,16 @@
                         <i class="fas fa-wand-magic-sparkles"></i>
                     </div>
                     <h2 class="card-title">Generate Secure Password</h2>
+                </div>
+
+                <!-- Password Mode Toggle -->
+                <div class="password-mode-toggle">
+                    <button class="mode-btn active" onclick="setPasswordMode('random')">
+                        <i class="fas fa-dice"></i> Random
+                    </button>
+                    <button class="mode-btn" onclick="setPasswordMode('pronounceable')">
+                        <i class="fas fa-comments"></i> Pronounceable
+                    </button>
                 </div>
 
                 <div class="password-display">
@@ -662,6 +918,10 @@
                     <label class="checkbox-item">
                         <input type="checkbox" id="includeSymbols" checked>
                         <span><i class="fas fa-at"></i> Symbols (!@#$)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="excludeAmbiguous">
+                        <span><i class="fas fa-eye-slash"></i> Exclude Ambiguous (0,O,l,1,I)</span>
                     </label>
                 </div>
 
@@ -719,8 +979,43 @@
             </div>
         </div>
 
-        <!-- Tab 3: Bulk Generator -->
+        <!-- Tab 3: Password Vault -->
         <div class="tab-content" id="tab-2">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-vault"></i>
+                    </div>
+                    <h2 class="card-title">Password Vault</h2>
+                </div>
+
+                <div class="vault-header">
+                    <div class="vault-search">
+                        <input type="text" id="vaultSearch" placeholder="Search passwords..." oninput="searchVault()">
+                    </div>
+                    <div class="vault-actions">
+                        <button class="btn btn-small btn-secondary" onclick="openAddModal()">
+                            <i class="fas fa-plus"></i>
+                            Add Password
+                        </button>
+                        <button class="btn btn-small" onclick="exportVault()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <div id="vaultContainer">
+                    <div class="vault-empty">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No passwords saved yet. Click "Add Password" to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Bulk Generator -->
+        <div class="tab-content" id="tab-3">
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -742,17 +1037,30 @@
                     <input type="range" id="bulkPasswordLength" min="8" max="64" value="16" oninput="updateBulkLength(this.value)">
                 </div>
 
-                <button class="btn" onclick="generateBulkPasswords()">
-                    <i class="fas fa-layer-group"></i>
-                    Generate Passwords
-                </button>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="bulkExcludeAmbiguous">
+                        <span><i class="fas fa-eye-slash"></i> Exclude Ambiguous Characters</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn" onclick="generateBulkPasswords()" style="flex: 1;">
+                        <i class="fas fa-layer-group"></i>
+                        Generate Passwords
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportBulkPasswords()" style="flex: 1;">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
 
                 <div class="bulk-passwords" id="bulkPasswordsList"></div>
             </div>
         </div>
 
-        <!-- Tab 4: Security Tips -->
-        <div class="tab-content" id="tab-3">
+        <!-- Tab 5: Security Tips -->
+        <div class="tab-content" id="tab-4">
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -827,7 +1135,7 @@
 
         <footer>
             <div class="footer-content">
-                <p>&copy; 2026 TheGhostPacket. All passwords are generated locally in your browser.</p>
+                <p>&copy; 2026 TheGhostPacket. All passwords are generated and stored locally in your browser.</p>
                 <div class="footer-links">
                     <a href="#"><i class="fab fa-github"></i> GitHub</a>
                     <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
@@ -837,12 +1145,100 @@
         </footer>
     </div>
 
+    <!-- Add/Edit Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Password</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="form-grid" onsubmit="savePassword(event)">
+                <div class="form-group">
+                    <label>Account Name *</label>
+                    <input type="text" id="modalAccountName" placeholder="e.g., Gmail, Netflix, Bank" required>
+                </div>
+                <div class="form-group">
+                    <label>Username/Email</label>
+                    <input type="text" id="modalUsername" placeholder="username@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div class="password-display">
+                        <input type="text" id="modalPassword" class="password-output" required>
+                        <button type="button" class="copy-btn" onclick="copyPassword('modalPassword')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Website URL</label>
+                    <input type="text" id="modalUrl" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="modalNotes" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i>
+                    Save Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Export Passwords</h2>
+                <button class="modal-close" onclick="closeExportModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                Choose the format to export your passwords. Warning: Exported files contain unencrypted passwords.
+            </p>
+            <div class="form-grid">
+                <button class="btn" onclick="downloadExport('csv')">
+                    <i class="fas fa-file-csv"></i>
+                    Export as CSV
+                </button>
+                <button class="btn btn-secondary" onclick="downloadExport('json')">
+                    <i class="fas fa-file-code"></i>
+                    Export as JSON
+                </button>
+                <button class="btn" onclick="downloadExport('txt')" style="background: var(--gradient-5);">
+                    <i class="fas fa-file-alt"></i>
+                    Export as TXT
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>
         <span id="toastMessage">Copied to clipboard!</span>
     </div>
 
     <script>
+        // Global state
+        let passwordMode = 'random';
+        let currentEditId = null;
+        let bulkPasswords = [];
+
+        // Initialize vault from localStorage
+        function loadVault() {
+            const vault = localStorage.getItem('passwordVault');
+            return vault ? JSON.parse(vault) : [];
+        }
+
+        function saveVault(vault) {
+            localStorage.setItem('passwordVault', JSON.stringify(vault));
+            renderVault();
+        }
+
         // Tab switching
         function switchTab(index) {
             const tabs = document.querySelectorAll('.tab-btn');
@@ -857,6 +1253,19 @@
                     contents[i].classList.remove('active');
                 }
             });
+
+            if (index === 2) {
+                renderVault();
+            }
+        }
+
+        // Password mode toggle
+        function setPasswordMode(mode) {
+            passwordMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.mode-btn').classList.add('active');
         }
 
         // Update length slider
@@ -868,19 +1277,65 @@
             document.getElementById('bulkLengthValue').textContent = value;
         }
 
+        // Pronounceable password generator
+        function generatePronounceablePassword(length) {
+            const consonants = 'bcdfghjklmnprstvwxyz';
+            const vowels = 'aeiou';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*';
+
+            let password = '';
+            let useConsonant = Math.random() > 0.5;
+
+            for (let i = 0; i < length - 2; i++) {
+                if (useConsonant) {
+                    password += consonants[Math.floor(Math.random() * consonants.length)];
+                } else {
+                    password += vowels[Math.floor(Math.random() * vowels.length)];
+                }
+                useConsonant = !useConsonant;
+            }
+
+            // Capitalize first letter
+            password = password.charAt(0).toUpperCase() + password.slice(1);
+
+            // Add number and symbol at end
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += symbols[Math.floor(Math.random() * symbols.length)];
+
+            return password;
+        }
+
         // Generate password
         function generatePassword() {
             const length = document.getElementById('passwordLength').value;
+
+            if (passwordMode === 'pronounceable') {
+                const password = generatePronounceablePassword(length);
+                document.getElementById('generatedPassword').value = password;
+                return;
+            }
+
             const includeUppercase = document.getElementById('includeUppercase').checked;
             const includeLowercase = document.getElementById('includeLowercase').checked;
             const includeNumbers = document.getElementById('includeNumbers').checked;
             const includeSymbols = document.getElementById('includeSymbols').checked;
+            const excludeAmbiguous = document.getElementById('excludeAmbiguous').checked;
 
             let charset = '';
-            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
-            if (includeNumbers) charset += '0123456789';
-            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            if (includeUppercase) {
+                charset += excludeAmbiguous ? 'ABCDEFGHJKLMNPQRSTUVWXYZ' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
+            if (includeLowercase) {
+                charset += excludeAmbiguous ? 'abcdefghijkmnopqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz';
+            }
+            if (includeNumbers) {
+                charset += excludeAmbiguous ? '23456789' : '0123456789';
+            }
+            if (includeSymbols) {
+                charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            }
 
             if (charset === '') {
                 showToast('Please select at least one character type!', 'error');
@@ -952,7 +1407,7 @@
             document.getElementById('infoTypes').textContent = types.join(', ') || 'None';
             document.getElementById('infoScore').textContent = `${score}/100`;
 
-            // Estimate crack time (simplified)
+            // Estimate crack time
             let crackTime = 'Instantly';
             if (score >= 80) crackTime = 'Centuries';
             else if (score >= 60) crackTime = 'Years';
@@ -986,20 +1441,29 @@
             }
         }
 
-        // Generate bulk passwords
+        // Bulk password generation
         function generateBulkPasswords() {
             const count = parseInt(document.getElementById('bulkCount').value);
             const length = parseInt(document.getElementById('bulkPasswordLength').value);
-            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const excludeAmbiguous = document.getElementById('bulkExcludeAmbiguous').checked;
+
+            let charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            if (excludeAmbiguous) {
+                charset = 'ABCDEFGHJKLMNPQRSTUVWXYZ' + 'abcdefghijkmnopqrstuvwxyz' + '23456789' + '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            }
 
             const listContainer = document.getElementById('bulkPasswordsList');
             listContainer.innerHTML = '';
+            bulkPasswords = [];
 
             for (let i = 0; i < count; i++) {
                 let password = '';
                 for (let j = 0; j < length; j++) {
                     password += charset.charAt(Math.floor(Math.random() * charset.length));
                 }
+
+                bulkPasswords.push(password);
 
                 const item = document.createElement('div');
                 item.className = 'bulk-password-item';
@@ -1021,9 +1485,231 @@
             showToast('Password copied to clipboard!');
         }
 
+        // Export bulk passwords
+        function exportBulkPasswords() {
+            if (bulkPasswords.length === 0) {
+                showToast('Generate passwords first!', 'error');
+                return;
+            }
+
+            const format = prompt('Choose format: csv, json, or txt', 'txt');
+
+            if (format === 'csv') {
+                const csv = 'Password\n' + bulkPasswords.join('\n');
+                downloadFile(csv, 'bulk-passwords.csv', 'text/csv');
+            } else if (format === 'json') {
+                const json = JSON.stringify({passwords: bulkPasswords}, null, 2);
+                downloadFile(json, 'bulk-passwords.json', 'application/json');
+            } else if (format === 'txt') {
+                const txt = bulkPasswords.join('\n');
+                downloadFile(txt, 'bulk-passwords.txt', 'text/plain');
+            } else {
+                showToast('Invalid format!', 'error');
+            }
+        }
+
+        // Vault functions
+        function renderVault() {
+            const vault = loadVault();
+            const container = document.getElementById('vaultContainer');
+
+            if (vault.length === 0) {
+                container.innerHTML = `
+                    <div class="vault-empty">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No passwords saved yet. Click "Add Password" to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = `
+                <div class="vault-list">
+                    ${vault.map((item, index) => `
+                        <div class="vault-item" data-index="${index}">
+                            <div class="vault-item-info">
+                                <div class="vault-item-name">${item.name}</div>
+                                ${item.username ? `<div class="vault-item-username">${item.username}</div>` : ''}
+                                <div class="vault-item-password">••••••••••••</div>
+                                ${item.url ? `<div class="vault-item-username"><i class="fas fa-link"></i> ${item.url}</div>` : ''}
+                            </div>
+                            <div class="vault-item-actions">
+                                <button class="icon-btn" onclick="viewPassword(${index})" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="icon-btn" onclick="copyVaultPassword(${index})" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="icon-btn" onclick="editPassword(${index})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="icon-btn delete" onclick="deletePassword(${index})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function searchVault() {
+            const query = document.getElementById('vaultSearch').value.toLowerCase();
+            const items = document.querySelectorAll('.vault-item');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'grid' : 'none';
+            });
+        }
+
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Add Password';
+            document.getElementById('modalAccountName').value = '';
+            document.getElementById('modalUsername').value = '';
+            document.getElementById('modalPassword').value = '';
+            document.getElementById('modalUrl').value = '';
+            document.getElementById('modalNotes').value = '';
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function editPassword(index) {
+            const vault = loadVault();
+            const item = vault[index];
+
+            currentEditId = index;
+            document.getElementById('modalTitle').textContent = 'Edit Password';
+            document.getElementById('modalAccountName').value = item.name;
+            document.getElementById('modalUsername').value = item.username || '';
+            document.getElementById('modalPassword').value = item.password;
+            document.getElementById('modalUrl').value = item.url || '';
+            document.getElementById('modalNotes').value = item.notes || '';
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function savePassword(event) {
+            event.preventDefault();
+
+            const vault = loadVault();
+            const passwordData = {
+                name: document.getElementById('modalAccountName').value,
+                username: document.getElementById('modalUsername').value,
+                password: document.getElementById('modalPassword').value,
+                url: document.getElementById('modalUrl').value,
+                notes: document.getElementById('modalNotes').value,
+                created: new Date().toISOString()
+            };
+
+            if (currentEditId !== null) {
+                vault[currentEditId] = {...vault[currentEditId], ...passwordData};
+                showToast('Password updated successfully!');
+            } else {
+                vault.push(passwordData);
+                showToast('Password added successfully!');
+            }
+
+            saveVault(vault);
+            closeModal();
+        }
+
+        function deletePassword(index) {
+            if (!confirm('Are you sure you want to delete this password?')) return;
+
+            const vault = loadVault();
+            vault.splice(index, 1);
+            saveVault(vault);
+            showToast('Password deleted successfully!');
+        }
+
+        function viewPassword(index) {
+            const vault = loadVault();
+            const password = vault[index].password;
+
+            const item = document.querySelector(`[data-index="${index}"] .vault-item-password`);
+            if (item.textContent === '••••••••••••') {
+                item.textContent = password;
+                setTimeout(() => {
+                    item.textContent = '••••••••••••';
+                }, 5000);
+            } else {
+                item.textContent = '••••••••••••';
+            }
+        }
+
+        function copyVaultPassword(index) {
+            const vault = loadVault();
+            navigator.clipboard.writeText(vault[index].password);
+            showToast('Password copied to clipboard!');
+        }
+
+        function closeModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        function exportVault() {
+            const vault = loadVault();
+            if (vault.length === 0) {
+                showToast('No passwords to export!', 'error');
+                return;
+            }
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function downloadExport(format) {
+            const vault = loadVault();
+
+            if (format === 'csv') {
+                const csv = 'Account Name,Username,Password,URL,Notes\n' + 
+                    vault.map(item => 
+                        `"${item.name}","${item.username || ''}","${item.password}","${item.url || ''}","${item.notes || ''}"`
+                    ).join('\n');
+                downloadFile(csv, 'password-vault.csv', 'text/csv');
+            } else if (format === 'json') {
+                const json = JSON.stringify(vault, null, 2);
+                downloadFile(json, 'password-vault.json', 'application/json');
+            } else if (format === 'txt') {
+                const txt = vault.map(item => 
+                    `Account: ${item.name}\nUsername: ${item.username || 'N/A'}\nPassword: ${item.password}\nURL: ${item.url || 'N/A'}\nNotes: ${item.notes || 'N/A'}\n---\n`
+                ).join('\n');
+                downloadFile(txt, 'password-vault.txt', 'text/plain');
+            }
+
+            closeExportModal();
+            showToast('Export completed successfully!');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
         // Generate initial password on load
         window.addEventListener('load', () => {
             generatePassword();
+            renderVault();
+        });
+
+        // Close modals on outside click
+        document.getElementById('passwordModal').addEventListener('click', (e) => {
+            if (e.target.id === 'passwordModal') closeModal();
+        });
+
+        document.getElementById('exportModal').addEventListener('click', (e) => {
+            if (e.target.id === 'exportModal') closeExportModal();
         });
     </script>
 </body>
